@@ -11,7 +11,7 @@ export const AppLayout: React.FC<{ children: ReactNode }> = ({ children }) => {
         py={4}
         fontSize={20}
       >
-        Doc.Scanner test
+        HALO AML
       </Box>
       <Box>{children}</Box>
     </Container>
