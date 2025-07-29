@@ -4,6 +4,12 @@ export const createPdf = async (
   images: string[],
   callback?: (status: boolean) => void
 ) => {
+  const onComplete = (status: boolean) => {
+    if (callback && typeof callback === "function") {
+      callback(status);
+    }
+  };
+
   try {
     const pdfDoc = await PDFDocument.create();
 
@@ -48,27 +54,31 @@ export const createPdf = async (
     const presigned = await fetch("/api/get-presigned-url");
     const { uploadUrl, fileUrl } = await presigned.json();
 
-    await fetch(uploadUrl, {
+    fetch(uploadUrl, {
       method: "PUT",
       headers: {
         "Content-Type": "application/pdf",
       },
       body: pdfFile,
-    });
-
-    await fetch("/api/send-email", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ url: fileUrl }),
-    });
-    if (callback && typeof callback === "function") {
-      callback(!0);
-    }
-    alert("Attachment sent");
-  } catch (e) {
-    if (callback && typeof callback === "function") {
-      callback(!1);
-    }
-    alert(e && e instanceof Error ? e.message : "Failed to send email");
+    })
+      .then(() => {
+        fetch("/api/send-email", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ url: fileUrl }),
+        })
+          .then(() => {
+            onComplete(!0);
+          })
+          .catch(() => {
+            onComplete(!1);
+          });
+      })
+      .catch((e) => {
+        console.log("Err", e);
+        onComplete(!1);
+      });
+  } catch {
+    onComplete(!1);
   }
 };

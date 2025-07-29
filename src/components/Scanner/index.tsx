@@ -8,6 +8,13 @@ import {
   Icon,
   useDisclosure,
   Spinner,
+  Modal,
+  ModalOverlay,
+  ModalContent,
+  ModalHeader,
+  ModalCloseButton,
+  ModalBody,
+  ModalFooter,
 } from "@chakra-ui/react";
 import { createPdf, fixImageOrientation, swap } from "@utils/index";
 import { useId, useState } from "react";
@@ -50,15 +57,25 @@ export const ScannerApp: React.FC = () => {
   };
 
   const { isOpen: isPending, onOpen: start, onClose: stop } = useDisclosure();
+  const { isOpen: isModalOpen, onOpen, onClose } = useDisclosure();
+  const [status, setStatus] = useState(!0);
+
+  const closeModal = () => {
+    onClose();
+    setStatus(!0);
+  };
   const handleSend = () => {
     if (!isPending) {
       start();
       setTimeout(() => {
         createPdf(docs, (status) => {
           stop();
+          onOpen();
           if (status) {
             setDocs([]);
             setSelected(-1);
+          } else {
+            setStatus(!1);
           }
         });
       });
@@ -68,6 +85,22 @@ export const ScannerApp: React.FC = () => {
   const HAS_IMAGES = docs && docs.length > 0;
   return (
     <Flex w="100%" direction={"column"}>
+      <Modal isCentered isOpen={isModalOpen} onClose={closeModal}>
+        <ModalOverlay />
+        <ModalContent color={!status ? "red.500" : ""} w="90%" bg="#161616">
+          <ModalHeader>{status ? "Done" : "Error"}</ModalHeader>
+          <ModalCloseButton />
+          <ModalBody>
+            {status ? "Email sent successfully." : "Failed to send email."}
+          </ModalBody>
+
+          <ModalFooter>
+            <Button colorScheme="gray" mr={3} onClick={onClose}>
+              Close
+            </Button>
+          </ModalFooter>
+        </ModalContent>
+      </Modal>
       <Flex
         hidden={HAS_IMAGES}
         w="100%"
