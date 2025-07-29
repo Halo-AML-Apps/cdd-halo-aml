@@ -6,7 +6,7 @@ export const createPdf = async (
 ) => {
   try {
     const pdfDoc = await PDFDocument.create();
-    // const helveticaFont = await pdfDoc.embedFont(StandardFonts.Helvetica);
+
     for (const base64 of images) {
       const imageBytes = Uint8Array.from(atob(base64.split(",")[1]), (c) =>
         c.charCodeAt(0)
@@ -37,14 +37,6 @@ export const createPdf = async (
         width: scaledWidth,
         height: scaledHeight,
       });
-      //   const timestamp = format(new Date(), "yyyy-MM-dd HH:mm:ss");
-      //   page.drawText(`Captured on: ${timestamp}`, {
-      //     x: A4_WIDTH - 200,
-      //     y: 20,
-      //     size: 12,
-      //     font: helveticaFont,
-      //     color: rgb(0, 0, 0),
-      //   });
     }
 
     const pdfBytes = await pdfDoc.save();
