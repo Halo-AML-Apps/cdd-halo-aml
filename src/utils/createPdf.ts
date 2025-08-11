@@ -1,7 +1,13 @@
 import { PageSizes, PDFDocument } from "pdf-lib";
 
+type FormType = {
+  phone: string;
+  name: string;
+  address: string;
+};
+
 export const createPdf = async (
-  images: string[],
+  { images, meta }: { images: string[]; meta: FormType },
   callback?: (status: boolean) => void
 ) => {
   const onComplete = (status: boolean) => {
@@ -65,7 +71,7 @@ export const createPdf = async (
         fetch("/api/send-email", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ url: fileUrl }),
+          body: JSON.stringify({ url: fileUrl, ...meta }),
         })
           .then(() => {
             onComplete(!0);

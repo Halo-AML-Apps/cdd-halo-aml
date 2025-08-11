@@ -1,4 +1,5 @@
 import { extendTheme, type ThemeConfig } from "@chakra-ui/react";
+import { Input, Textarea } from "./Input";
 
 const config: ThemeConfig = {
   initialColorMode: "dark",
@@ -18,6 +19,10 @@ export const theme = extendTheme({
         color: "whiteAlpha.900",
       },
     },
+  },
+  components: {
+    Input,
+    Textarea,
   },
 
   colors: {

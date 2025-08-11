@@ -15,7 +15,13 @@ import {
   ModalCloseButton,
   ModalBody,
   ModalFooter,
+  Drawer,
+  DrawerOverlay,
+  DrawerContent,
+  DrawerHeader,
+  DrawerBody,
 } from "@chakra-ui/react";
+import { UserDetails } from "@components/form";
 import { createPdf, fixImageOrientation, swap } from "@utils/index";
 import { useId, useState } from "react";
 
@@ -64,11 +70,24 @@ export const ScannerApp: React.FC = () => {
     onClose();
     setStatus(!0);
   };
-  const handleSend = () => {
+
+  const {
+    isOpen: isDrawerOpen,
+    onOpen: onOpenDrawer,
+    onClose: onClosedrawer,
+  } = useDisclosure();
+  type FormType = {
+    phone: string;
+    name: string;
+    address: string;
+  };
+
+  const handleSend = (meta: FormType) => {
+    onClosedrawer();
     if (!isPending) {
       start();
       setTimeout(() => {
-        createPdf(docs, (status) => {
+        createPdf({ images: docs, meta }, (status) => {
           stop();
           onOpen();
           if (status) {
@@ -218,7 +237,7 @@ export const ScannerApp: React.FC = () => {
       {HAS_IMAGES && (
         <>
           <Flex mt={3}>
-            <Button size={"lg"} w="100%" onClick={handleSend}>
+            <Button size={"lg"} w="100%" onClick={onOpenDrawer}>
               Upload to mail
               <Icon as={MdOutlineFileUpload} ml={2} fontSize={25} />
             </Button>
@@ -229,6 +248,27 @@ export const ScannerApp: React.FC = () => {
           </Flex>
         </>
       )}
+
+      <Drawer
+        placement={"bottom"}
+        onClose={onClosedrawer}
+        isOpen={isDrawerOpen}
+      >
+        <DrawerOverlay />
+        <DrawerContent minH={"80vh"} bg="#171717">
+          <DrawerHeader
+            fontSize={15}
+            fontWeight={"bold"}
+            borderBottomWidth="1px"
+            borderColor={"#1d1d1d"}
+          >
+            Details
+          </DrawerHeader>
+          <DrawerBody>
+            <UserDetails onSubmit={handleSend} />
+          </DrawerBody>
+        </DrawerContent>
+      </Drawer>
     </Flex>
   );
 };
