@@ -34,22 +34,11 @@ const Field: React.FC<{
   const error = get(errors, name);
   return (
     <Flex direction={"column"} w="100%">
-      <Flex
-        as={"label"}
-        htmlFor={id}
-        py={1}
-        mb={1}
-        fontSize={13}
-        fontWeight={"bold"}
-      >
+      <Flex as={"label"} htmlFor={id} py={1} mb={1} fontWeight={"bold"}>
         {label}
       </Flex>
       <Flex>{children}</Flex>
-      {error && error.message && (
-        <Flex color={"red.500"} fontSize={13}>
-          {error.message}
-        </Flex>
-      )}
+      {error && error.message && <Flex color={"red.500"}>{error.message}</Flex>}
     </Flex>
   );
 };
@@ -114,8 +103,8 @@ export const UserDetails: React.FC<{ onSubmit: (v: FormType) => void }> = ({
           />
         </Field>
         <Flex w="full" mt={3}>
-          <Button w="100%" colorScheme="green" type="submit">
-            Submit Details
+          <Button size={"lg"} w="100%" colorScheme="green" type="submit">
+            Next
           </Button>
         </Flex>
       </VStack>

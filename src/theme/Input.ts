@@ -8,6 +8,7 @@ const primary = definePartsStyle({
   field: {
     bg: "#101010",
     p: 8,
+    px: 4,
     borderRadius: 5,
   },
 });
