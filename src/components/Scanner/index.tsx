@@ -130,7 +130,22 @@ export const ScannerApp: React.FC = () => {
               alignItems: "center",
               minH: "80vh",
             })}
+        direction={"column"}
       >
+        <Flex
+          textAlign={"center"}
+          p={3}
+          opacity={0.8}
+          fontSize={13}
+          border={"solid 1px"}
+          borderColor={"#232323"}
+          borderRadius={"10px"}
+          mb={"25px"}
+        >
+          This is a document scanner for your Vendor Onboarding (CDD).Open
+          camera, photograph your forms & ID documents. Submit with your contact
+          details. Not to be used for Trusts or Companies.
+        </Flex>
         <Button
           size={"lg"}
           leftIcon={<MdPhotoCamera />}
