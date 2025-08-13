@@ -83,6 +83,7 @@ export const ScannerApp: React.FC = () => {
           if (status) {
             setDocs([]);
             setSelected(-1);
+            setStep(0);
           } else {
             setStatus(!1);
           }
