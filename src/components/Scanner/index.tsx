@@ -30,6 +30,8 @@ export const ScannerApp: React.FC = () => {
   const { isOpen } = useDisclosure();
   const [step, setStep] = useState<number>(0);
   const [data, setData] = useState<FormType>();
+  const [id, setId] = useState<number>(0);
+
   const onChangeHandler = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
@@ -84,6 +86,7 @@ export const ScannerApp: React.FC = () => {
             setDocs([]);
             setSelected(-1);
             setStep(0);
+            setId(new Date().getTime());
           } else {
             setStatus(!1);
           }
@@ -280,7 +283,7 @@ export const ScannerApp: React.FC = () => {
       )}
 
       <Flex hidden={step !== 0} w="100%" direction={"column"}>
-        <UserDetails onSubmit={onNext} />
+        <UserDetails key={id} onSubmit={onNext} />
       </Flex>
     </Flex>
   );

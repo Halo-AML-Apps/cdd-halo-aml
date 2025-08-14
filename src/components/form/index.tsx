@@ -61,7 +61,11 @@ export const UserDetails: React.FC<{ onSubmit: (v: FormType) => void }> = ({
   };
   return (
     <FormProvider {...methods}>
-      <VStack as={"form"} onSubmit={methods.handleSubmit(handleSubmit)}>
+      <VStack
+        as={"form"}
+        gap={15}
+        onSubmit={methods.handleSubmit(handleSubmit)}
+      >
         <Field name="name" id="name" label="Name">
           <Input
             id="name"
@@ -91,7 +95,11 @@ export const UserDetails: React.FC<{ onSubmit: (v: FormType) => void }> = ({
           />
         </Field>
 
-        <Field name="address" label="Address" id="address">
+        <Field
+          name="address"
+          label="Address of the property being listed"
+          id="address"
+        >
           <Textarea
             p={8}
             {...methods.register("address", {
