@@ -1,5 +1,12 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import nodemailer from "nodemailer";
+import {
+  S3Client,
+  PutObjectCommand,
+  GetObjectCommand,
+} from "@aws-sdk/client-s3";
+
+import { v4 as uuidv4 } from "uuid";
 
 export default async function handler(
   req: NextApiRequest,
@@ -11,6 +18,47 @@ export default async function handler(
   }
 
   try {
+    const s3 = new S3Client({
+      region: process.env.AWS_REGION!,
+      credentials: {
+        accessKeyId: process.env.AWS_ACCESS_KEY_ID!,
+        secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY!,
+      },
+    });
+
+    const bucketName = process.env.AWS_S3_BUCKET!;
+    const key = "data.json";
+
+    let data: any[] = [];
+    try {
+      const existing = await s3.send(
+        new GetObjectCommand({ Bucket: bucketName, Key: key })
+      );
+      const body = await streamToString(existing.Body as any);
+      data = JSON.parse(body);
+    } catch {
+      data = [];
+    }
+
+    const newEntry = {
+      id: uuidv4(),
+      name,
+      phone,
+      office,
+      doc: url,
+      time: new Date().getTime(),
+    };
+    data.push(newEntry);
+
+    await s3.send(
+      new PutObjectCommand({
+        Bucket: bucketName,
+        Key: key,
+        Body: JSON.stringify(data, null, 2),
+        ContentType: "application/json",
+      })
+    );
+
     const transporter = nodemailer.createTransport({
       service: "gmail",
       auth: {
@@ -32,12 +80,20 @@ export default async function handler(
     });
 
     res.status(200).json({ success: true });
-  } catch (err) {
-    console.error(err);
+  } catch {
     res.status(500).json({
       error: "Email send failed",
       env: process.env.EMAIL_USER,
       p: process.env.EMAIL_PASS,
     });
   }
+}
+
+function streamToString(stream: any): Promise<string> {
+  return new Promise((resolve, reject) => {
+    const chunks: Uint8Array[] = [];
+    stream.on("data", (chunk: Uint8Array) => chunks.push(chunk));
+    stream.on("error", reject);
+    stream.on("end", () => resolve(Buffer.concat(chunks).toString("utf-8")));
+  });
 }

@@ -73,15 +73,19 @@ export const createPdf = async (
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ url: fileUrl, ...meta }),
         })
-          .then(() => {
-            onComplete(!0);
+          .then((res) => res.json())
+          .then((res) => {
+            if (res && res.success) {
+              onComplete(!0);
+            } else {
+              onComplete(!1);
+            }
           })
           .catch(() => {
             onComplete(!1);
           });
       })
-      .catch((e) => {
-        console.log("Err", e);
+      .catch(() => {
         onComplete(!1);
       });
   } catch {
