@@ -47,6 +47,7 @@ export default async function handler(
       office,
       doc: url,
       time: new Date().getTime(),
+      address,
     };
     data.push(newEntry);
 
