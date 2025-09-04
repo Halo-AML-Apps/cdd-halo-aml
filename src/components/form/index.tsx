@@ -1,4 +1,11 @@
-import { Button, Flex, Input, Textarea, VStack } from "@chakra-ui/react";
+import {
+  Button,
+  Flex,
+  Input,
+  Select,
+  Textarea,
+  VStack,
+} from "@chakra-ui/react";
 import { ReactNode } from "react";
 import {
   FormProvider,
@@ -86,13 +93,32 @@ export const UserDetails: React.FC<{ onSubmit: (v: FormType) => void }> = ({
         </Field>
 
         <Field name="office" id="office" label="Office">
-          <Input
+          <Select
+            bg="#101010"
+            borderRadius={5}
             id="office"
-            placeholder="Office"
+            h={"60px"}
+            border={"none"}
             {...methods.register("office", {
               required: "Office is required",
             })}
-          />
+            placeholder="Office"
+          >
+            {[
+              "City",
+              "Kilbirnie",
+              "Khandallah",
+              "Karori",
+              "Johnsonville",
+              "Lower Hutt",
+              "Upper Hutt",
+              "Masterton",
+            ].map((value) => (
+              <option key={value} value={value}>
+                {value}
+              </option>
+            ))}
+          </Select>
         </Field>
 
         <Field
