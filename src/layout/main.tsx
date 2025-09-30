@@ -18,6 +18,17 @@ export const AppLayout: React.FC<{ children: ReactNode }> = ({ children }) => {
         HALO AML
       </Box>
       <Box>{children}</Box>
+        <Box as="footer" py={4} textAlign="center" fontSize="sm" color="gray.500">
+        &copy; {new Date().getFullYear()} HALO AML. All rights reserved. |
+        <a
+          href="https://www.haloaml.com/about-5"
+          target="_blank"
+          rel="noopener noreferrer"
+          style={{ color: '#3182ce', marginLeft: 4 }}
+        >
+          Privacy Policy
+        </a>
+      </Box>
     </Container>
   );
 };
