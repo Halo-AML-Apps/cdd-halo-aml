@@ -8,6 +8,8 @@ import {
 
 import { v4 as uuidv4 } from "uuid";
 
+import { getOffices } from "../../utils/getOffices";
+
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
@@ -67,6 +69,19 @@ export default async function handler(
         pass: process.env.EMAIL_PASS,
       },
     });
+
+    const _office = getOffices().find(
+      (item) => item.name?.toLowerCase() === office?.toLowerCase()
+    );
+
+    if (_office && _office.email) {
+      await transporter.sendMail({
+        from: process.env.EMAIL_USER,
+        to: _office.email,
+        subject: `${office}`,
+        html: `<p>Document received,thank you</p>`,
+      });
+    }
 
     await transporter.sendMail({
       from: process.env.EMAIL_USER,
