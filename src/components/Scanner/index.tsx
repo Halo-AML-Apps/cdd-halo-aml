@@ -21,10 +21,11 @@ import { OfficeNames } from "@utils/getOffices";
 import { createPdf, fixImageOrientation, swap } from "@utils/index";
 import { useId, useState } from "react";
 import { IoIosArrowBack } from "react-icons/io";
-import { MdDelete, MdOutlineFileUpload, MdPhotoCamera } from "react-icons/md";
+import { MdDelete, MdOutlineFileUpload, MdPhotoCamera, MdPhotoLibrary } from "react-icons/md";
 
 export const ScannerApp: React.FC<{ offices: OfficeNames }> = ({ offices }) => {
   const uid = useId();
+  const galleryUid = useId();
 
   const [docs, setDocs] = useState<string[]>([]);
   const [selected, setSelected] = useState<number>(-1);
@@ -180,6 +181,30 @@ export const ScannerApp: React.FC<{ offices: OfficeNames }> = ({ offices }) => {
                 multiple={false}
               />
             </Button>
+            <Button
+              size={"lg"}
+              leftIcon={<MdPhotoLibrary />}
+              w="100%"
+              variant={"ghost"}
+              as={"label"}
+              htmlFor={galleryUid}
+              bg="#181818"
+              cursor={"pointer"}
+              py={8}
+              borderRadius={"lg"}
+              border={"solid 1px #fff !important"}
+              mt={3}
+            >
+              Choose from Gallery
+              <Input
+                hidden
+                id={galleryUid}
+                type="file"
+                accept="image/*"
+                onChange={onChangeHandler}
+                multiple={false}
+              />
+            </Button>
           </Flex>
 
           {HAS_IMAGES && (
@@ -241,21 +266,43 @@ export const ScannerApp: React.FC<{ offices: OfficeNames }> = ({ offices }) => {
                 })}
 
                 <Box
-                  as="label"
                   bg={"#121212"}
                   borderRadius={5}
                   display={"flex"}
+                  flexDirection={"column"}
                   justifyContent={"center"}
                   alignItems={"center"}
-                  htmlFor={!isOpen ? uid : "-"}
                   border={"solid 3px"}
                   borderColor={"transparent"}
                   minH={150}
-                  _hover={{
-                    opacity: 0.8,
-                  }}
+                  gap={2}
                 >
-                  <Icon fontSize={30} as={MdPhotoCamera} />
+                  <Box
+                    as="label"
+                    htmlFor={!isOpen ? uid : "-"}
+                    display={"flex"}
+                    justifyContent={"center"}
+                    alignItems={"center"}
+                    cursor={"pointer"}
+                    _hover={{ opacity: 0.8 }}
+                    flexDirection={"column"}
+                  >
+                    <Icon fontSize={30} as={MdPhotoCamera} />
+                    <Box fontSize={10} mt={1}>Camera</Box>
+                  </Box>
+                  <Box
+                    as="label"
+                    htmlFor={!isOpen ? galleryUid : "-"}
+                    display={"flex"}
+                    justifyContent={"center"}
+                    alignItems={"center"}
+                    cursor={"pointer"}
+                    _hover={{ opacity: 0.8 }}
+                    flexDirection={"column"}
+                  >
+                    <Icon fontSize={30} as={MdPhotoLibrary} />
+                    <Box fontSize={10} mt={1}>Gallery</Box>
+                  </Box>
                 </Box>
               </SimpleGrid>
             </Flex>
