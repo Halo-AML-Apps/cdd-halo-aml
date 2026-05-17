@@ -74,18 +74,10 @@ export default async function handler(
       (item) => item.name?.toLowerCase() === office?.toLowerCase()
     );
 
-    if (_office && _office.email) {
-      await transporter.sendMail({
-        from: process.env.EMAIL_USER,
-        to: _office.email,
-        subject: `${office}`,
-        html: `<p>Document received,thank you</p>`,
-      });
-    }
-
     await transporter.sendMail({
       from: process.env.EMAIL_USER,
       to: process.env.TARGET_EMAILS,
+      cc: _office?.email,
       subject: `${name} | ${address}`,
       html: `<p>
       <p><b>Name</b>  : ${name}</p>\n
@@ -96,12 +88,9 @@ export default async function handler(
     });
 
     res.status(200).json({ success: true });
-  } catch {
-    res.status(500).json({
-      error: "Email send failed",
-      env: process.env.EMAIL_USER,
-      p: process.env.EMAIL_PASS,
-    });
+  } catch (err) {
+    console.error("send-email failed:", err);
+    res.status(500).json({ error: "Email send failed" });
   }
 }
 
